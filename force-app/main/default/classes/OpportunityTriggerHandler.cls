@@ -84,7 +84,7 @@ public with sharing class OpportunityTriggerHandler {
             oppAccountIds.add(opp.AccountId);
         }
         // Create accMap to query related accounts and contacts where Title = 'VP Sales'. 
-        Map<Id, Account> accMap = new Map<Id, Account>([SELECT Id, (SELECT Id FROM Contacts WHERE Title = 'VP Sales') FROM Account WHERE Id IN: oppAccountIds]);
+        Map<Id, Account> accMap = new Map<Id, Account>([SELECT Id, Name, (SELECT Id FROM Contacts WHERE Title = 'VP Sales') FROM Account WHERE Id IN: oppAccountIds]);
 
         Map<Id, Opportunity> oppMap = new Map<Id, Opportunity>();
         for (Opportunity opp : oppNewMap.values()){            
