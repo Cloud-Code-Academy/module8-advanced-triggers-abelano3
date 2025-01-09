@@ -79,18 +79,18 @@ public with sharing class OpportunityTriggerHandler {
     */
     public static void assignPrimaryContact(Map<Id,Opportunity> oppNewMap) { 
         // Create a Set of related Account Ids.
-        Set<Id> relatedAccountIds = new Set<Id>();
+        Set<Id> oppAccountIds = new Set<Id>();
         for (Opportunity opp : oppNewMap.values()) {
-            relatedAccountIds.add(opp.AccountId);
+            oppAccountIds.add(opp.AccountId);
         }
-        // Create accountMap to query related accounts and contacts where Title = 'VP Sales'. 
-        Map<Id, Account> accountMap = new Map<Id, Account>([SELECT Id, (SELECT Id FROM Contacts WHERE Title = 'VP Sales') FROM Account WHERE Id IN: relatedAccountIds]);
+        // Create accMap to query related accounts and contacts where Title = 'VP Sales'. 
+        Map<Id, Account> accMap = new Map<Id, Account>([SELECT Id, (SELECT Id FROM Contacts WHERE Title = 'VP Sales') FROM Account WHERE Id IN: oppAccountIds]);
 
         Map<Id, Opportunity> oppMap = new Map<Id, Opportunity>();
         for (Opportunity opp : oppNewMap.values()){            
-            if (opp.Primary_Contact__c == null){
-                Opportunity oppToUpdate = new Opportunity(Id = opp.Id);
-                oppToUpdate.Primary_Contact__c = accountMap.get(opp.AccountId).Contacts[0].Id;
+            if (opp.Primary_Contact__c == null && !accMap.get(opp.AccountId).Contacts.isEmpty()){
+                Opportunity oppToUpdate = new Opportunity(Id = opp.Id); 
+                oppToUpdate.Primary_Contact__c = accMap.get(opp.AccountId).Contacts[0].Id;
                 oppMap.put(opp.Id, oppToUpdate);
             }
         }
