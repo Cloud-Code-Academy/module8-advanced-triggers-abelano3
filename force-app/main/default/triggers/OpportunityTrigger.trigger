@@ -16,32 +16,9 @@ For this lesson, students have two options:
 Remember, whichever option you choose, ensure that the trigger is activated and tested to validate its functionality.
 */
 trigger OpportunityTrigger on Opportunity (before insert, after insert, before update, after update, before delete, after delete, after undelete) {
-    switch on Trigger.OperationType{
-        when BEFORE_INSERT {
-            OpportunityTriggerHandler.setType(Trigger.new);
-        }
-        when AFTER_INSERT {
-            OpportunityTriggerHandler.insertTask(Trigger.new);
-        }
-        when BEFORE_UPDATE {
-            OpportunityTriggerHandler.amountValidation(Trigger.new);
-            OpportunityTriggerHandler.setPrimaryContact(Trigger.new);
-            OpportunityTriggerHandler.updateDescriptionFromStage(Trigger.new, Trigger.oldMap);
-        }
-        when AFTER_UPDATE {
+  
+    new OpportunityTriggerHandler().run();
 
-        }
-        when BEFORE_DELETE {
-            OpportunityTriggerHandler.validateCloseOpportunity(Trigger.old);
-            OpportunityTriggerHandler.deleteCloseWonOpportunity(Trigger.old);
-        }
-        when AFTER_DELETE {
-            OpportunityTriggerHandler.notifyOwnersOpportunityDeleted(Trigger.old);
-        }
-        when AFTER_UNDELETE {
-            OpportunityTriggerHandler.assignPrimaryContact(Trigger.newMap);
-        }
-    }
 }
 
 
